@@ -4,7 +4,11 @@ import { usePayment } from './PaymentContext';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, Calendar, DollarSign } from 'lucide-react';
 
-const DonationHistory: React.FC = () => {
+interface DonationHistoryProps {
+  onClose?: () => void;
+}
+
+const DonationHistory: React.FC<DonationHistoryProps> = ({ onClose }) => {
   const { donations, user, resetPayment } = usePayment();
 
   const formatDate = (date: Date) => {
@@ -33,10 +37,10 @@ const DonationHistory: React.FC = () => {
     <div className="space-y-6 animate-fade-in">
       <div className="flex items-center space-x-3">
         <Button
-          variant="outline"
+          variant="ghost"
           size="sm"
-          onClick={resetPayment}
-          className="flex items-center space-x-2"
+          onClick={onClose || resetPayment}
+          className="flex items-center space-x-2 text-gray-500 hover:text-gray-700"
         >
           <ArrowLeft size={16} />
           <span>Back</span>

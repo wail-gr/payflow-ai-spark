@@ -4,9 +4,13 @@ import { usePayment } from './PaymentContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Eye, EyeOff } from 'lucide-react';
+import { Eye, EyeOff, ArrowLeft } from 'lucide-react';
 
-const UserAuth: React.FC = () => {
+interface UserAuthProps {
+  onClose?: () => void;
+}
+
+const UserAuth: React.FC<UserAuthProps> = ({ onClose }) => {
   const { login, register } = usePayment();
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState('');
@@ -20,10 +24,15 @@ const UserAuth: React.FC = () => {
     setLoading(true);
     
     try {
+      let success = false;
       if (isLogin) {
-        await login(email, password);
+        success = await login(email, password);
       } else {
-        await register(email, password, name);
+        success = await register(email, password, name);
+      }
+      
+      if (success && onClose) {
+        onClose();
       }
     } finally {
       setLoading(false);
@@ -32,6 +41,20 @@ const UserAuth: React.FC = () => {
 
   return (
     <div className="space-y-6 animate-fade-in">
+      {onClose && (
+        <div className="flex items-center space-x-3">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={onClose}
+            className="flex items-center space-x-2 text-gray-500 hover:text-gray-700"
+          >
+            <ArrowLeft size={16} />
+            <span>Back</span>
+          </Button>
+        </div>
+      )}
+      
       <div className="text-center">
         <h3 className="text-xl font-semibold">
           {isLogin ? 'Sign In' : 'Create Account'}
