@@ -1,8 +1,7 @@
-
 import React, { useEffect } from 'react';
 import { usePayment } from './PaymentContext';
 import { Button } from '@/components/ui/button';
-import { CheckCircle, Copy } from 'lucide-react';
+import { CheckCircle, Copy, Share2 } from 'lucide-react';
 import { toast } from 'sonner';
 
 const PaymentConfirmation: React.FC = () => {
@@ -12,11 +11,13 @@ const PaymentConfirmation: React.FC = () => {
     transactionId, 
     resetPayment,
     selectedPaymentMethod,
-    aiSuggestion
+    aiSuggestion,
+    showShareButton,
+    donateAnonymously,
+    user
   } = usePayment();
 
   useEffect(() => {
-    // Confetti animation when component mounts
     const createConfetti = () => {
       const confettiCount = 100;
       const colors = ['#8B5CF6', '#0EA5E9', '#10B981', '#F97316'];
@@ -43,7 +44,6 @@ const PaymentConfirmation: React.FC = () => {
       }
     };
     
-    // Create keyframe animation dynamically
     const style = document.createElement('style');
     style.innerHTML = `
       @keyframes confetti-fall {
@@ -72,6 +72,22 @@ const PaymentConfirmation: React.FC = () => {
       toast.success('Transaction ID copied to clipboard');
     }
   };
+
+  const handleShare = () => {
+    const shareText = `I just supported this! 💝 ${currency} ${amount.toFixed(2)} donated successfully!`;
+    
+    if (navigator.share) {
+      navigator.share({
+        title: 'I just made a donation!',
+        text: shareText,
+        url: window.location.href,
+      }).catch(console.error);
+    } else {
+      // Fallback to clipboard
+      navigator.clipboard.writeText(shareText);
+      toast.success('Share message copied to clipboard!');
+    }
+  };
   
   const formatDate = (date: Date) => {
     return new Intl.DateTimeFormat('en-US', {
@@ -88,6 +104,7 @@ const PaymentConfirmation: React.FC = () => {
     switch (selectedPaymentMethod) {
       case 'google-pay': return 'Google Pay';
       case 'apple-pay': return 'Apple Pay';
+      case 'paypal': return 'PayPal';
       case 'crypto': return 'Cryptocurrency';
       default: return 'Payment Method';
     }
@@ -126,6 +143,14 @@ const PaymentConfirmation: React.FC = () => {
               Completed
             </span>
           </div>
+          {donateAnonymously && (
+            <div className="flex justify-between items-center">
+              <span className="text-gray-500">Donation Type</span>
+              <span className="bg-gray-100 text-gray-600 px-2 py-1 rounded-full text-xs font-medium">
+                Anonymous
+              </span>
+            </div>
+          )}
           <div className="flex justify-between items-center">
             <span className="text-gray-500">Transaction ID</span>
             <div className="flex items-center space-x-2">
@@ -140,6 +165,18 @@ const PaymentConfirmation: React.FC = () => {
           </div>
         </div>
       </div>
+      
+      {showShareButton && (
+        <div className="space-y-3">
+          <Button 
+            onClick={handleShare}
+            className="w-full bg-gradient-to-r from-green-500 to-green-600 hover:opacity-90 transition-all flex items-center justify-center space-x-2"
+          >
+            <Share2 size={16} />
+            <span>Share: "I just supported this!" 🎉</span>
+          </Button>
+        </div>
+      )}
       
       {aiSuggestion && (
         <div className="bg-payment-purple/5 p-4 rounded-lg border border-payment-purple/20 animate-fade-in">

@@ -1,86 +1,131 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { usePayment } from './PaymentContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { CreditCard, DollarSign } from 'lucide-react';
+import { Label } from '@/components/ui/label';
+import { Switch } from '@/components/ui/switch';
+import { DollarSign, Euro, PoundSterling } from 'lucide-react';
 
 const PaymentDetails: React.FC = () => {
-  const { amount, setAmount, currency, setCurrency, nextStep } = usePayment();
-  const [amountError, setAmountError] = useState<string | null>(null);
+  const { 
+    amount, 
+    setAmount, 
+    currency, 
+    setCurrency, 
+    nextStep,
+    donateAnonymously,
+    setDonateAnonymously,
+    user
+  } = usePayment();
   
-  const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = parseFloat(e.target.value);
-    if (isNaN(value) || value <= 0) {
-      setAmountError('Please enter a valid amount');
-    } else {
-      setAmountError(null);
-    }
-    setAmount(isNaN(value) ? 0 : value);
+  const [inputAmount, setInputAmount] = useState<string>(amount > 0 ? amount.toString() : '');
+  
+  useEffect(() => {
+    const numAmount = parseFloat(inputAmount) || 0;
+    setAmount(numAmount);
+  }, [inputAmount, setAmount]);
+  
+  const quickAmounts = [10, 25, 50, 100];
+  
+  const handleQuickAmount = (quickAmount: number) => {
+    setInputAmount(quickAmount.toString());
   };
-
+  
   const handleContinue = () => {
-    if (amount <= 0) {
-      setAmountError('Please enter a valid amount');
-      return;
+    if (amount > 0) {
+      nextStep();
     }
-    nextStep();
   };
-
-  const currencies = ['USD', 'EUR', 'GBP', 'JPY', 'CAD', 'AUD', 'BTC', 'ETH'];
-
+  
+  const getCurrencyIcon = () => {
+    switch (currency) {
+      case 'USD':
+        return <DollarSign size={18} className="text-gray-500" />;
+      case 'EUR':
+        return <Euro size={18} className="text-gray-500" />;
+      case 'GBP':
+        return <PoundSterling size={18} className="text-gray-500" />;
+      default:
+        return <DollarSign size={18} className="text-gray-500" />;
+    }
+  };
+  
   return (
     <div className="space-y-8 animate-fade-in">
       <div className="space-y-6">
-        <div className="space-y-2">
-          <label htmlFor="amount" className="block text-sm font-medium">
+        <div className="space-y-3">
+          <Label htmlFor="amount" className="text-base font-medium">
             Payment Amount
-          </label>
+          </Label>
           <div className="relative">
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <DollarSign size={18} className="text-gray-400" />
+            <div className="absolute left-3 top-1/2 transform -translate-y-1/2">
+              {getCurrencyIcon()}
             </div>
             <Input
               id="amount"
               type="number"
+              value={inputAmount}
+              onChange={(e) => setInputAmount(e.target.value)}
               placeholder="0.00"
-              className="pl-10 text-lg payment-input"
-              value={amount || ''}
-              onChange={handleAmountChange}
-              autoComplete="off"
+              className="pl-10 pr-20 text-lg font-semibold payment-input"
+              min="0"
+              step="0.01"
+            />
+            <select
+              value={currency}
+              onChange={(e) => setCurrency(e.target.value)}
+              className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-transparent border-none text-sm font-medium focus:outline-none cursor-pointer"
+            >
+              <option value="USD">USD</option>
+              <option value="EUR">EUR</option>
+              <option value="GBP">GBP</option>
+            </select>
+          </div>
+        </div>
+        
+        <div className="space-y-3">
+          <Label className="text-sm text-gray-600">Quick amounts</Label>
+          <div className="grid grid-cols-4 gap-2">
+            {quickAmounts.map((quickAmount) => (
+              <Button
+                key={quickAmount}
+                variant="outline"
+                onClick={() => handleQuickAmount(quickAmount)}
+                className="text-sm py-2 hover:bg-payment-purple hover:text-white hover:border-payment-purple transition-all"
+              >
+                {currency === 'USD' && '$'}{currency === 'EUR' && '€'}{currency === 'GBP' && '£'}{quickAmount}
+              </Button>
+            ))}
+          </div>
+        </div>
+
+        {user && (
+          <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+            <div className="space-y-1">
+              <Label htmlFor="anonymous" className="text-sm font-medium">
+                Donate Anonymously
+              </Label>
+              <p className="text-xs text-gray-500">
+                Your donation won't be linked to your account
+              </p>
+            </div>
+            <Switch
+              id="anonymous"
+              checked={donateAnonymously}
+              onCheckedChange={setDonateAnonymously}
             />
           </div>
-          {amountError && (
-            <p className="text-red-500 text-xs mt-1 animate-fade-in">{amountError}</p>
-          )}
-        </div>
-
-        <div className="space-y-2">
-          <label htmlFor="currency" className="block text-sm font-medium">
-            Currency
-          </label>
-          <Select value={currency} onValueChange={setCurrency}>
-            <SelectTrigger className="payment-input">
-              <SelectValue placeholder="Select Currency" />
-            </SelectTrigger>
-            <SelectContent>
-              {currencies.map((curr) => (
-                <SelectItem key={curr} value={curr}>
-                  {curr}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
+        )}
       </div>
-
+      
       <div className="pt-4">
         <Button 
           onClick={handleContinue}
+          disabled={amount <= 0}
           className="w-full bg-gradient-to-r from-payment-purple to-payment-teal hover:opacity-90 transition-all"
         >
-          Continue to Payment
+          Continue to Payment Method
         </Button>
       </div>
     </div>

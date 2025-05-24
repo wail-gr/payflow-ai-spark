@@ -12,7 +12,7 @@ const PaymentMethodSelection: React.FC = () => {
     prevStep 
   } = usePayment();
 
-  const handleMethodSelect = (method: 'google-pay' | 'apple-pay' | 'crypto') => {
+  const handleMethodSelect = (method: 'google-pay' | 'apple-pay' | 'crypto' | 'paypal') => {
     setSelectedPaymentMethod(method);
   };
 
@@ -55,6 +55,22 @@ const PaymentMethodSelection: React.FC = () => {
               </svg>
             </div>
             <p className="font-medium text-sm text-center">Apple Pay</p>
+          </div>
+        </div>
+
+        {/* PayPal Option */}
+        <div 
+          className={`p-5 rounded-xl border border-gray-200 cursor-pointer payment-method-card
+                    ${selectedPaymentMethod === 'paypal' ? 'active' : ''}`}
+          onClick={() => handleMethodSelect('paypal')}
+        >
+          <div className="flex flex-col items-center justify-center space-y-3">
+            <div className="w-12 h-12 rounded-full bg-payment-purple/10 flex items-center justify-center">
+              <svg viewBox="0 0 24 24" width="24" height="24" fill="#8B5CF6">
+                <path d="M7.076 21.337H2.47a.641.641 0 0 1-.633-.74L4.944.901C5.026.382 5.474 0 5.998 0h7.46c2.57 0 4.578.543 5.69 1.81 1.01 1.15 1.304 2.42 1.012 4.287-.023.143-.047.288-.077.437-.983 5.05-4.349 6.797-8.647 6.797h-2.19c-.524 0-.968.382-1.05.9l-1.12 7.106zm14.146-14.42a3.35 3.35 0 0 0-.608-.463c-.82-.51-2.093-.51-3.83-.51h-4.115c-.524 0-.968.382-1.05.9L10.85 9.97a.641.641 0 0 0 .633.74h2.705c2.930 0 4.914-.87 5.547-3.32.18-.698.231-1.35.13-1.96-.068-.41-.181-.744-.343-1.013z"/>
+              </svg>
+            </div>
+            <p className="font-medium text-sm text-center">PayPal</p>
           </div>
         </div>
 
