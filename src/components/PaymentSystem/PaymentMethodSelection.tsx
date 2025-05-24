@@ -2,7 +2,7 @@
 import React from 'react';
 import { usePayment } from './PaymentContext';
 import { Button } from '@/components/ui/button';
-import { CreditCard, BitcoinIcon, WalletCardsIcon } from 'lucide-react';
+import { BitcoinIcon } from 'lucide-react';
 
 const PaymentMethodSelection: React.FC = () => {
   const { 
@@ -12,7 +12,7 @@ const PaymentMethodSelection: React.FC = () => {
     prevStep 
   } = usePayment();
 
-  const handleMethodSelect = (method: 'card' | 'google-pay' | 'apple-pay' | 'crypto') => {
+  const handleMethodSelect = (method: 'google-pay' | 'apple-pay' | 'crypto') => {
     setSelectedPaymentMethod(method);
   };
 
@@ -24,21 +24,7 @@ const PaymentMethodSelection: React.FC = () => {
 
   return (
     <div className="space-y-8 animate-fade-in">
-      <div className="grid grid-cols-2 gap-4">
-        {/* Credit/Debit Card Option */}
-        <div 
-          className={`p-5 rounded-xl border border-gray-200 cursor-pointer payment-method-card
-                    ${selectedPaymentMethod === 'card' ? 'active' : ''}`}
-          onClick={() => handleMethodSelect('card')}
-        >
-          <div className="flex flex-col items-center justify-center space-y-3">
-            <div className="w-12 h-12 rounded-full bg-payment-purple/10 flex items-center justify-center">
-              <CreditCard className="text-payment-purple" size={24} />
-            </div>
-            <p className="font-medium text-sm text-center">Credit/Debit Card</p>
-          </div>
-        </div>
-
+      <div className="grid grid-cols-1 gap-4">
         {/* Google Pay Option */}
         <div 
           className={`p-5 rounded-xl border border-gray-200 cursor-pointer payment-method-card

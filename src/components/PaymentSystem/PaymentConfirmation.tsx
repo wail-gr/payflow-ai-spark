@@ -2,7 +2,7 @@
 import React, { useEffect } from 'react';
 import { usePayment } from './PaymentContext';
 import { Button } from '@/components/ui/button';
-import { CheckCircle, Copy, AlertCircle } from 'lucide-react';
+import { CheckCircle, Copy } from 'lucide-react';
 import { toast } from 'sonner';
 
 const PaymentConfirmation: React.FC = () => {
@@ -86,7 +86,6 @@ const PaymentConfirmation: React.FC = () => {
   
   const paymentMethodName = () => {
     switch (selectedPaymentMethod) {
-      case 'card': return 'Credit/Debit Card';
       case 'google-pay': return 'Google Pay';
       case 'apple-pay': return 'Apple Pay';
       case 'crypto': return 'Cryptocurrency';

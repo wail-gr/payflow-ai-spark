@@ -3,7 +3,7 @@ import React, { createContext, useState, useContext, useEffect } from 'react';
 import { toast } from 'sonner';
 
 // Define types for our payment context
-type PaymentMethod = 'card' | 'google-pay' | 'apple-pay' | 'crypto';
+type PaymentMethod = 'google-pay' | 'apple-pay' | 'crypto';
 
 interface PaymentContextType {
   amount: number;
@@ -12,13 +12,6 @@ interface PaymentContextType {
   setCurrency: (currency: string) => void;
   selectedPaymentMethod: PaymentMethod | null;
   setSelectedPaymentMethod: (method: PaymentMethod | null) => void;
-  cardDetails: {
-    number: string;
-    name: string;
-    expiry: string;
-    cvc: string;
-  };
-  updateCardDetails: (field: string, value: string) => void;
   step: number;
   nextStep: () => void;
   prevStep: () => void;
@@ -52,17 +45,6 @@ export const PaymentProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const [transactionId, setTransactionId] = useState<string | null>(null);
   const [aiSuggestion, setAiSuggestion] = useState<string | null>(null);
   const [isSecure, setIsSecure] = useState<boolean>(true);
-  
-  const [cardDetails, setCardDetails] = useState({
-    number: '',
-    name: '',
-    expiry: '',
-    cvc: '',
-  });
-
-  const updateCardDetails = (field: string, value: string) => {
-    setCardDetails(prev => ({ ...prev, [field]: value }));
-  };
 
   const nextStep = () => {
     if (step < 4) {
@@ -79,12 +61,6 @@ export const PaymentProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const resetPayment = () => {
     setStep(1);
     setSelectedPaymentMethod(null);
-    setCardDetails({
-      number: '',
-      name: '',
-      expiry: '',
-      cvc: '',
-    });
     setProcessing(false);
     setTransactionComplete(false);
     setTransactionId(null);
@@ -138,8 +114,6 @@ export const PaymentProvider: React.FC<{ children: React.ReactNode }> = ({ child
         setCurrency,
         selectedPaymentMethod,
         setSelectedPaymentMethod,
-        cardDetails,
-        updateCardDetails,
         step,
         nextStep,
         prevStep,

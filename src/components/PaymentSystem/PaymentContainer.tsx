@@ -4,13 +4,12 @@ import { usePayment } from './PaymentContext';
 import PaymentHeader from './PaymentHeader';
 import PaymentDetails from './PaymentDetails';
 import PaymentMethodSelection from './PaymentMethodSelection';
-import CardPaymentForm from './CardPaymentForm';
 import AlternativePaymentMethods from './AlternativePaymentMethods';
 import PaymentProcessing from './PaymentProcessing';
 import PaymentConfirmation from './PaymentConfirmation';
 
 const PaymentContainer: React.FC = () => {
-  const { step, selectedPaymentMethod, processing, transactionComplete } = usePayment();
+  const { step, processing, transactionComplete } = usePayment();
   
   const renderStepContent = () => {
     if (processing) {
@@ -27,11 +26,7 @@ const PaymentContainer: React.FC = () => {
       case 2:
         return <PaymentMethodSelection />;
       case 3:
-        if (selectedPaymentMethod === 'card') {
-          return <CardPaymentForm />;
-        } else {
-          return <AlternativePaymentMethods />;
-        }
+        return <AlternativePaymentMethods />;
       default:
         return <PaymentDetails />;
     }
