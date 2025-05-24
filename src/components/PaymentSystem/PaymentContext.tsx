@@ -5,12 +5,6 @@ import { toast } from 'sonner';
 // Define types for our payment context
 type PaymentMethod = 'google-pay' | 'apple-pay' | 'crypto' | 'paypal';
 
-interface User {
-  id: string;
-  email: string;
-  name: string;
-}
-
 interface Donation {
   id: string;
   amount: number;
@@ -39,15 +33,7 @@ interface PaymentContextType {
   transactionId: string | null;
   aiSuggestion: string | null;
   isSecure: boolean;
-  // User authentication
-  user: User | null;
-  login: (email: string, password: string) => Promise<boolean>;
-  logout: () => void;
-  register: (email: string, password: string, name: string) => Promise<boolean>;
-  // Anonymous donation
-  donateAnonymously: boolean;
-  setDonateAnonymously: (anonymous: boolean) => void;
-  // Donation history
+  // Anonymous donation history
   donations: Donation[];
   showShareButton: boolean;
 }
@@ -72,10 +58,35 @@ export const PaymentProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const [transactionId, setTransactionId] = useState<string | null>(null);
   const [aiSuggestion, setAiSuggestion] = useState<string | null>(null);
   const [isSecure, setIsSecure] = useState<boolean>(true);
-  const [user, setUser] = useState<User | null>(null);
-  const [donateAnonymously, setDonateAnonymously] = useState<boolean>(false);
   const [donations, setDonations] = useState<Donation[]>([]);
   const [showShareButton, setShowShareButton] = useState<boolean>(false);
+
+  // Load donation history from localStorage on mount
+  useEffect(() => {
+    const savedDonations = localStorage.getItem('payment-donations');
+    if (savedDonations) {
+      try {
+        const parsed = JSON.parse(savedDonations);
+        // Convert date strings back to Date objects
+        const donationsWithDates = parsed.map((donation: any) => ({
+          ...donation,
+          date: new Date(donation.date)
+        }));
+        setDonations(donationsWithDates);
+      } catch (error) {
+        console.error('Error loading donations from localStorage:', error);
+      }
+    }
+  }, []);
+
+  // Save donations to localStorage whenever donations change
+  const saveDonationsToCache = (newDonations: Donation[]) => {
+    try {
+      localStorage.setItem('payment-donations', JSON.stringify(newDonations));
+    } catch (error) {
+      console.error('Error saving donations to localStorage:', error);
+    }
+  };
 
   const nextStep = () => {
     if (step < 4) {
@@ -96,76 +107,6 @@ export const PaymentProvider: React.FC<{ children: React.ReactNode }> = ({ child
     setTransactionComplete(false);
     setTransactionId(null);
     setShowShareButton(false);
-    setDonateAnonymously(false);
-  };
-
-  const login = async (email: string, password: string): Promise<boolean> => {
-    // Simulate login - replace with actual authentication
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    if (email && password) {
-      const mockUser: User = {
-        id: '1',
-        email,
-        name: email.split('@')[0]
-      };
-      setUser(mockUser);
-      
-      // Load mock donation history
-      const mockDonations: Donation[] = [
-        {
-          id: 'TXN001',
-          amount: 25.00,
-          currency: 'USD',
-          method: 'paypal',
-          date: new Date('2024-05-20'),
-          anonymous: false,
-          transactionId: 'TXN001ABC'
-        },
-        {
-          id: 'TXN002',
-          amount: 50.00,
-          currency: 'USD',
-          method: 'google-pay',
-          date: new Date('2024-05-15'),
-          anonymous: true,
-          transactionId: 'TXN002DEF'
-        }
-      ];
-      setDonations(mockDonations);
-      
-      toast.success('Login successful!');
-      return true;
-    }
-    
-    toast.error('Invalid credentials');
-    return false;
-  };
-
-  const register = async (email: string, password: string, name: string): Promise<boolean> => {
-    // Simulate registration - replace with actual registration
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    if (email && password && name) {
-      const newUser: User = {
-        id: Math.random().toString(36).substring(7),
-        email,
-        name
-      };
-      setUser(newUser);
-      setDonations([]);
-      toast.success('Registration successful!');
-      return true;
-    }
-    
-    toast.error('Registration failed');
-    return false;
-  };
-
-  const logout = () => {
-    setUser(null);
-    setDonations([]);
-    toast.success('Logged out successfully');
   };
 
   const completeTransaction = () => {
@@ -175,18 +116,20 @@ export const PaymentProvider: React.FC<{ children: React.ReactNode }> = ({ child
     setTransactionComplete(true);
     setShowShareButton(true);
     
-    // Add to donation history if user is logged in
-    if (user && selectedPaymentMethod) {
+    // Add to donation history and save to cache
+    if (selectedPaymentMethod) {
       const newDonation: Donation = {
         id: randomId,
         amount,
         currency,
         method: selectedPaymentMethod,
         date: new Date(),
-        anonymous: donateAnonymously,
+        anonymous: true, // Always anonymous now
         transactionId: randomId
       };
-      setDonations(prev => [newDonation, ...prev]);
+      const updatedDonations = [newDonation, ...donations];
+      setDonations(updatedDonations);
+      saveDonationsToCache(updatedDonations);
     }
     
     toast.success("Payment successful!", {
@@ -240,12 +183,6 @@ export const PaymentProvider: React.FC<{ children: React.ReactNode }> = ({ child
         transactionId,
         aiSuggestion,
         isSecure,
-        user,
-        login,
-        logout,
-        register,
-        donateAnonymously,
-        setDonateAnonymously,
         donations,
         showShareButton,
       }}

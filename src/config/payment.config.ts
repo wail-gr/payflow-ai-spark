@@ -32,8 +32,8 @@ export interface PaymentConfig {
   ui: {
     theme: 'light' | 'dark';
     primaryColor: string;
-    showDonationHistory: boolean;
-    allowAnonymous: boolean;
+    showPaymentHistory: boolean;
+    anonymous: boolean;
     showShareButton: boolean;
   };
   
@@ -41,6 +41,8 @@ export interface PaymentConfig {
   security: {
     requireSSL: boolean;
     sessionTimeout: number;
+    enableCSRFProtection: boolean;
+    rateLimitRequests: number;
   };
 }
 
@@ -59,12 +61,14 @@ export const defaultConfig: PaymentConfig = {
   ui: {
     theme: 'light',
     primaryColor: '#8B5CF6',
-    showDonationHistory: true,
-    allowAnonymous: true,
+    showPaymentHistory: true,
+    anonymous: true,
     showShareButton: true,
   },
   security: {
     requireSSL: true,
     sessionTimeout: 3600000, // 1 hour
+    enableCSRFProtection: true,
+    rateLimitRequests: 100, // requests per minute
   },
 };

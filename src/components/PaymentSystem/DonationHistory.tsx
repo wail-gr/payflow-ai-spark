@@ -9,7 +9,7 @@ interface DonationHistoryProps {
 }
 
 const DonationHistory: React.FC<DonationHistoryProps> = ({ onClose }) => {
-  const { donations, user, resetPayment } = usePayment();
+  const { donations, resetPayment } = usePayment();
 
   const formatDate = (date: Date) => {
     return new Intl.DateTimeFormat('en-US', {
@@ -33,28 +33,45 @@ const DonationHistory: React.FC<DonationHistoryProps> = ({ onClose }) => {
 
   const totalDonated = donations.reduce((sum, donation) => sum + donation.amount, 0);
 
+  const clearHistory = () => {
+    localStorage.removeItem('payment-donations');
+    window.location.reload();
+  };
+
   return (
     <div className="space-y-6 animate-fade-in">
-      <div className="flex items-center space-x-3">
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={onClose || resetPayment}
-          className="flex items-center space-x-2 text-gray-500 hover:text-gray-700"
-        >
-          <ArrowLeft size={16} />
-          <span>Back</span>
-        </Button>
-        <div>
-          <h3 className="text-xl font-semibold">Donation History</h3>
-          <p className="text-gray-500 text-sm">Welcome back, {user?.name}!</p>
+      <div className="flex items-center justify-between">
+        <div className="flex items-center space-x-3">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={onClose || resetPayment}
+            className="flex items-center space-x-2 text-gray-500 hover:text-gray-700"
+          >
+            <ArrowLeft size={16} />
+            <span>Back</span>
+          </Button>
+          <div>
+            <h3 className="text-xl font-semibold">Payment History</h3>
+            <p className="text-gray-500 text-sm">Your anonymous transaction history</p>
+          </div>
         </div>
+        {donations.length > 0 && (
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={clearHistory}
+            className="text-red-600 hover:text-red-700"
+          >
+            Clear
+          </Button>
+        )}
       </div>
 
       <div className="bg-gradient-to-r from-payment-purple/10 to-payment-teal/10 p-4 rounded-lg">
         <div className="flex items-center space-x-2 mb-2">
           <DollarSign className="text-payment-purple" size={20} />
-          <span className="font-medium">Total Donated</span>
+          <span className="font-medium">Total Paid</span>
         </div>
         <p className="text-2xl font-bold text-payment-purple">
           ${totalDonated.toFixed(2)} USD
@@ -62,16 +79,16 @@ const DonationHistory: React.FC<DonationHistoryProps> = ({ onClose }) => {
       </div>
 
       <div className="space-y-4">
-        <h4 className="font-medium">Recent Donations</h4>
+        <h4 className="font-medium">Recent Transactions</h4>
         
         {donations.length === 0 ? (
           <div className="text-center py-8 text-gray-500">
-            <p>No donations yet</p>
+            <p>No transactions yet</p>
             <Button
               onClick={resetPayment}
               className="mt-4 bg-gradient-to-r from-payment-purple to-payment-teal hover:opacity-90"
             >
-              Make Your First Donation
+              Make Your First Payment
             </Button>
           </div>
         ) : (
@@ -87,11 +104,9 @@ const DonationHistory: React.FC<DonationHistoryProps> = ({ onClose }) => {
                       <span className="font-medium">
                         ${donation.amount.toFixed(2)} {donation.currency}
                       </span>
-                      {donation.anonymous && (
-                        <span className="bg-gray-100 text-gray-600 px-2 py-1 rounded-full text-xs">
-                          Anonymous
-                        </span>
-                      )}
+                      <span className="bg-gray-100 text-gray-600 px-2 py-1 rounded-full text-xs">
+                        Anonymous
+                      </span>
                     </div>
                     <div className="flex items-center space-x-2 text-sm text-gray-500">
                       <Calendar size={14} />
