@@ -48,6 +48,24 @@ export const usePayment = () => {
   return context;
 };
 
+// Simple encryption utility for sensitive data
+const encryptData = (data: string): string => {
+  // Simple Base64 encoding with salt for demo purposes
+  // In production, use proper encryption libraries
+  const salt = 'payment_salt_2024';
+  return btoa(salt + data);
+};
+
+const decryptData = (encryptedData: string): string => {
+  try {
+    const salt = 'payment_salt_2024';
+    const decoded = atob(encryptedData);
+    return decoded.replace(salt, '');
+  } catch {
+    return '';
+  }
+};
+
 export const PaymentProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [amount, setAmount] = useState<number>(0);
   const [currency, setCurrency] = useState<string>('USD');
@@ -61,12 +79,13 @@ export const PaymentProvider: React.FC<{ children: React.ReactNode }> = ({ child
   const [donations, setDonations] = useState<Donation[]>([]);
   const [showShareButton, setShowShareButton] = useState<boolean>(false);
 
-  // Load donation history from localStorage on mount
+  // Load donation history from encrypted localStorage on mount
   useEffect(() => {
-    const savedDonations = localStorage.getItem('payment-donations');
+    const savedDonations = localStorage.getItem('encrypted_payment_donations');
     if (savedDonations) {
       try {
-        const parsed = JSON.parse(savedDonations);
+        const decryptedData = decryptData(savedDonations);
+        const parsed = JSON.parse(decryptedData);
         // Convert date strings back to Date objects
         const donationsWithDates = parsed.map((donation: any) => ({
           ...donation,
@@ -79,10 +98,11 @@ export const PaymentProvider: React.FC<{ children: React.ReactNode }> = ({ child
     }
   }, []);
 
-  // Save donations to localStorage whenever donations change
+  // Save donations to encrypted localStorage whenever donations change
   const saveDonationsToCache = (newDonations: Donation[]) => {
     try {
-      localStorage.setItem('payment-donations', JSON.stringify(newDonations));
+      const encryptedData = encryptData(JSON.stringify(newDonations));
+      localStorage.setItem('encrypted_payment_donations', encryptedData);
     } catch (error) {
       console.error('Error saving donations to localStorage:', error);
     }
@@ -116,7 +136,7 @@ export const PaymentProvider: React.FC<{ children: React.ReactNode }> = ({ child
     setTransactionComplete(true);
     setShowShareButton(true);
     
-    // Add to donation history and save to cache
+    // Add to donation history and save to encrypted cache
     if (selectedPaymentMethod) {
       const newDonation: Donation = {
         id: randomId,

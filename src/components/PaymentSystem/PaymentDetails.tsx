@@ -4,7 +4,6 @@ import { usePayment } from './PaymentContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Switch } from '@/components/ui/switch';
 import { DollarSign, Euro, PoundSterling } from 'lucide-react';
 
 const PaymentDetails: React.FC = () => {
@@ -13,10 +12,7 @@ const PaymentDetails: React.FC = () => {
     setAmount, 
     currency, 
     setCurrency, 
-    nextStep,
-    donateAnonymously,
-    setDonateAnonymously,
-    user
+    nextStep
   } = usePayment();
   
   const [inputAmount, setInputAmount] = useState<string>(amount > 0 ? amount.toString() : '');
@@ -100,23 +96,16 @@ const PaymentDetails: React.FC = () => {
           </div>
         </div>
 
-        {user && (
-          <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
-            <div className="space-y-1">
-              <Label htmlFor="anonymous" className="text-sm font-medium">
-                Donate Anonymously
-              </Label>
-              <p className="text-xs text-gray-500">
-                Your donation won't be linked to your account
-              </p>
-            </div>
-            <Switch
-              id="anonymous"
-              checked={donateAnonymously}
-              onCheckedChange={setDonateAnonymously}
-            />
+        <div className="p-4 bg-gray-50 rounded-lg">
+          <div className="space-y-1">
+            <Label className="text-sm font-medium">
+              Anonymous Payment
+            </Label>
+            <p className="text-xs text-gray-500">
+              All payments are processed anonymously for your privacy
+            </p>
           </div>
-        )}
+        </div>
       </div>
       
       <div className="pt-4">

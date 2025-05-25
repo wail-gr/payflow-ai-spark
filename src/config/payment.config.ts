@@ -5,6 +5,7 @@ export interface PaymentConfig {
     baseUrl: string;
     apiKey: string;
     timeout: number;
+    useHttps: boolean;
   };
   
   // Payment Methods
@@ -37,20 +38,26 @@ export interface PaymentConfig {
     showShareButton: boolean;
   };
   
-  // Security
+  // Security Configuration
   security: {
     requireSSL: boolean;
     sessionTimeout: number;
     enableCSRFProtection: boolean;
+    enableXSSProtection: boolean;
     rateLimitRequests: number;
+    rateLimitWindowMs: number;
+    encryptSensitiveData: boolean;
+    allowedOrigins: string[];
+    secureHeaders: boolean;
   };
 }
 
 export const defaultConfig: PaymentConfig = {
   api: {
-    baseUrl: process.env.REACT_APP_API_URL || 'http://localhost:3001/api',
+    baseUrl: process.env.REACT_APP_API_URL || 'https://localhost:3001/api',
     apiKey: process.env.REACT_APP_API_KEY || '',
     timeout: 30000,
+    useHttps: true,
   },
   methods: {
     googlePay: { enabled: true },
@@ -69,6 +76,11 @@ export const defaultConfig: PaymentConfig = {
     requireSSL: true,
     sessionTimeout: 3600000, // 1 hour
     enableCSRFProtection: true,
+    enableXSSProtection: true,
     rateLimitRequests: 100, // requests per minute
+    rateLimitWindowMs: 60000, // 1 minute window
+    encryptSensitiveData: true,
+    allowedOrigins: ['https://localhost:3000', 'https://yourdomain.com'],
+    secureHeaders: true,
   },
 };

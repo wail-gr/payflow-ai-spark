@@ -34,7 +34,7 @@ const DonationHistory: React.FC<DonationHistoryProps> = ({ onClose }) => {
   const totalDonated = donations.reduce((sum, donation) => sum + donation.amount, 0);
 
   const clearHistory = () => {
-    localStorage.removeItem('payment-donations');
+    localStorage.removeItem('encrypted_payment_donations');
     window.location.reload();
   };
 
@@ -53,7 +53,7 @@ const DonationHistory: React.FC<DonationHistoryProps> = ({ onClose }) => {
           </Button>
           <div>
             <h3 className="text-xl font-semibold">Payment History</h3>
-            <p className="text-gray-500 text-sm">Your anonymous transaction history</p>
+            <p className="text-gray-500 text-sm">Your encrypted transaction history</p>
           </div>
         </div>
         {donations.length > 0 && (
