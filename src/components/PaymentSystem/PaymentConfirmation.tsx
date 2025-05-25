@@ -1,3 +1,4 @@
+
 import React, { useEffect } from 'react';
 import { usePayment } from './PaymentContext';
 import { Button } from '@/components/ui/button';
@@ -12,9 +13,7 @@ const PaymentConfirmation: React.FC = () => {
     resetPayment,
     selectedPaymentMethod,
     aiSuggestion,
-    showShareButton,
-    donateAnonymously,
-    user
+    showShareButton
   } = usePayment();
 
   useEffect(() => {
@@ -83,7 +82,6 @@ const PaymentConfirmation: React.FC = () => {
         url: window.location.href,
       }).catch(console.error);
     } else {
-      // Fallback to clipboard
       navigator.clipboard.writeText(shareText);
       toast.success('Share message copied to clipboard!');
     }
@@ -143,14 +141,12 @@ const PaymentConfirmation: React.FC = () => {
               Completed
             </span>
           </div>
-          {donateAnonymously && (
-            <div className="flex justify-between items-center">
-              <span className="text-gray-500">Donation Type</span>
-              <span className="bg-gray-100 text-gray-600 px-2 py-1 rounded-full text-xs font-medium">
-                Anonymous
-              </span>
-            </div>
-          )}
+          <div className="flex justify-between items-center">
+            <span className="text-gray-500">Donation Type</span>
+            <span className="bg-gray-100 text-gray-600 px-2 py-1 rounded-full text-xs font-medium">
+              Anonymous
+            </span>
+          </div>
           <div className="flex justify-between items-center">
             <span className="text-gray-500">Transaction ID</span>
             <div className="flex items-center space-x-2">
