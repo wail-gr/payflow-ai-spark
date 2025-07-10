@@ -1,73 +1,52 @@
-# Welcome to your Lovable project
+# 💸 PayFlow AI Spark
 
-## Project info
+**The open-source, drop-in payment UI for modern apps**  
+Goodbye Stripe fees. Hello native payments. Fast. Free. Flexible.
+if u wanna check the live ui go to this link : https://payflow-ai-spark.pages.dev/
+---
 
-**URL**: https://lovable.dev/projects/05e5aab4-1b32-424f-bc11-eb71ba81f6c8
+### 🧠 What is PayFlow?
 
-## How can I edit this code?
+PayFlow AI Spark is a frontend-first payment layer designed for devs who want to:
 
-There are several ways of editing your application.
+- Accept payments via **Apple Pay, Google Pay, PayPal, Crypto** – no Stripe needed
+- Keep **full control of your backend + keys**
+- Avoid monthly fees, vendor lock-in, or compliance bloat
+- Run light, fast, mobile-native payment flows
 
-**Use Lovable**
+Works beautifully with your own backend, or integrate with the free backend we provide below.
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/05e5aab4-1b32-424f-bc11-eb71ba81f6c8) and start prompting.
+---
 
-Changes made via Lovable will be committed automatically to this repo.
+### 🚀 Who's It For?
 
-**Use your preferred IDE**
+✅ Indie devs  
+✅ App builders using Flutter/React Native/Android/iOS  
+✅ Founders sick of Stripe fees  
+✅ Teams who want **on-device privacy-first payment flows**
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+If your app already uses Apple/Google/PayPal or a crypto wallet — you’re 90% there.
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+---
 
-Follow these steps:
+### ⚙️ Features
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+- 🏦 **Supports:**
+  - Apple Pay
+  - Google Pay
+  - PayPal
+  - Crypto (ETH, BTC, etc.)
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+- 💻 **Simple UI:** Minimal, clean, and customizable
+- 🔐 **Secure:** You control the API keys — not us
+- 🧩 **Modular:** Plug into your own backend OR use our open-source backend template
+- 💸 **Free:** No SaaS fees. No vendor lock-in. No tracking.
 
-# Step 3: Install the necessary dependencies.
-npm i
+---
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
+### 🛠️ Setup in Your App
 
-**Edit a file directly in GitHub**
+#### 1. Clone the UI
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
-
-**Use GitHub Codespaces**
-
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
-
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/05e5aab4-1b32-424f-bc11-eb71ba81f6c8) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+```bash
+git clone https://github.com/wail-gr/payflow-ai-spark.git
